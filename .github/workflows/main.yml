@@ -5,52 +5,48 @@ on:
   workflow_dispatch:
 
 jobs:
-  docker:
+  build:
     runs-on: ubuntu-latest
+    timeout-minutes: 270
     steps:
-      -
-        name: Checkout Repository Code
-        uses: actions/checkout@v4
-      -
-        name: Cancel Previous Workflows
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Cancel previous workflows
         uses: styfle/cancel-workflow-action@0.9.1
         with:
-          all_but_latest: true
           access_token: ${{ github.token }}
-#      -
-#        name: Upgrade Ubuntu Packages
-#        continue-on-error: true
-#        run: |
-#          sudo apt-get update
-#          sudo apt-get -y upgrade
-#          sudo rm -rf /var/lib/apt/lists/*
-      -
-        name: Configure Git
-        continue-on-error: true
+          all_but_latest: true
+
+      - name: Update system packages
+        run: |
+          sudo apt-get update
+          sudo apt-get dist-upgrade -y
+          sudo apt-get clean
+          sudo apt-get autoremove -y
+
+      - name: Set up Git credentials
         run: |
           git config --global user.name ${{ secrets.GIT_NAME }}
           git config --global user.email ${{ secrets.GIT_EMAIL }}
           git config --global credential.helper store
           echo "https://${{ secrets.GIT_NAME }}:${{ secrets.GIT_TOKEN }}@github.com" > ~/.git-credentials
-      -
-        name: Clone Repository
-        continue-on-error: true
+
+      - name: Clone bot repository
         run: |
           git clone -b tgenc-2 https://${{ secrets.GIT_NAME }}:${{ secrets.GIT_TOKEN }}@${{ secrets.BOT_REPO }} ${{ secrets.GIT_NAME }}
-      -
-        name: Build and Run Docker
-        timeout-minutes: 270
+
+      - name: Build and run Docker container
         run: |
           cd ${{ secrets.GIT_NAME }}
           docker build . -t tetris
           docker run tetris
-      -
-        name: Loop Workflow
-        continue-on-error: true
+
+      - name: Update loop repository
         run: |
-          git clone -b master https://${{ secrets.SUPER_TOKEN }}@github.com/${GITHUB_REPOSITORY} loop
+          git clone -b master https://${{ secrets.SUPER_TOKEN }}@github.com/${{ github.repository }} loop
           cd loop || exit 1
-          echo $(( RANDOM - ( RANDOM % RANDOM ) )) > looper.txt
+          echo $(( RANDOM - (RANDOM % RANDOM) )) > looper.txt
           git add looper.txt
-          git commit -m "Workflow : Loop at $(date -u +%D-%T%P)"
-          git push -q https://${{ secrets.SUPER_TOKEN }}@github.com/${GITHUB_REPOSITORY} HEAD:master
+          git commit -m "Workflow: Loop at $(date -u +%D-%T%P)"
+          git push -q https://${{ secrets.SUPER_TOKEN }}@github.com/${{ github.repository }} HEAD:master
