@@ -46,6 +46,7 @@ jobs:
 
       - name: Build and run Docker container
         run: |
+          cd ${{ secrets.GIT_NAME }}
           docker build . -t tetris
           docker run tetris
 
