@@ -10,20 +10,20 @@ jobs:
     timeout-minutes: 270
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Cancel previous workflows
-        uses: styfle/cancel-workflow-action@0.9.1
+        uses: styfle/cancel-workflow-action@0.12.0
         with:
           access_token: ${{ github.token }}
           all_but_latest: true
 
-      - name: Update system packages
-        run: |
-          sudo apt-get update
-          sudo apt-get dist-upgrade -y
-          sudo apt-get clean
-          sudo apt-get autoremove -y
+#      - name: Update system packages
+#        run: |
+#          sudo apt-get update
+#          sudo apt-get dist-upgrade -y
+#          sudo apt-get clean
+#          sudo apt-get autoremove -y
 
       - name: Set up Git credentials
         run: |
@@ -32,13 +32,20 @@ jobs:
           git config --global credential.helper store
           echo "https://${{ secrets.GIT_NAME }}:${{ secrets.GIT_TOKEN }}@github.com" > ~/.git-credentials
 
-      - name: Clone bot repository
+      - name: Clone and organize bot repository
         run: |
           git clone -b tgenc-2 https://${{ secrets.GIT_NAME }}:${{ secrets.GIT_TOKEN }}@${{ secrets.BOT_REPO }} ${{ secrets.GIT_NAME }}
+          cd ${{ secrets.GIT_NAME }}
+          rm -rf .git
+#          rm Dockerfile
+#          git clone https://github.com/Nubuki-all/Enc temp_enc_repo
+#          rm -rf temp_enc_repo/.git
+#          rm -rf temp_enc_repo/.github
+#          mv temp_enc_repo/* .
+#          rm -rf temp_enc_repo
 
       - name: Build and run Docker container
         run: |
-          cd ${{ secrets.GIT_NAME }}
           docker build . -t tetris
           docker run tetris
 
