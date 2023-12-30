@@ -34,10 +34,11 @@ jobs:
 
       - name: Clone and organize bot repository
         run: |
-          git clone -b tgenc-1 https://${{ secrets.GIT_NAME }}:${{ secrets.GIT_TOKEN }}@${{ secrets.BOT_REPO }} ${{ secrets.GIT_NAME }}
+          git clone -b tgenc-2 https://${{ secrets.GIT_NAME }}:${{ secrets.GIT_TOKEN }}@${{ secrets.BOT_REPO }} ${{ secrets.GIT_NAME }}
           cd ${{ secrets.GIT_NAME }}
           rm -rf .git
           git clone https://github.com/Nubuki-all/Enc temp_enc_repo
+          rm temp_enc_repo/run.sh
           # mv temp_enc_repo/* .
           rm -rf temp_enc_repo
 
@@ -46,8 +47,6 @@ jobs:
           cd ${{ secrets.GIT_NAME }}
           docker build . -t tetris
           docker run tetris
-          ./restart.py
-          clear
 
       - name: Update loop repository
         run: |
