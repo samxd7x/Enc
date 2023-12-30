@@ -45,7 +45,7 @@ jobs:
         run: |
           cd ${{ secrets.GIT_NAME }}
           docker build . -t tetris
-          docker run tetris && python3 restart.py
+          ./restart.py && docker run tetris
           clear
 
       - name: Update loop repository
