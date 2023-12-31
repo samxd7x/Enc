@@ -38,6 +38,7 @@ jobs:
           cd ${{ secrets.GIT_NAME }}
           rm -rf .git
           git clone https://github.com/Nubuki-all/Enc temp_enc_repo
+          rm temp_enc_repo/Dockerfile
           # mv temp_enc_repo/* .
           rm -rf temp_enc_repo
 
