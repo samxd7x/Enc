@@ -38,10 +38,11 @@ jobs:
           cd ${{ secrets.GIT_NAME }}
           rm -rf .git
           git clone https://github.com/Nubuki-all/Enc temp_enc_repo
+          rm temp_enc_repo/bot/__init__.py
           rm temp_enc_repo/Dockerfile
           mv temp_enc_repo/* .
-          wget https://gofile.io/d/EAHxt9 -O bot/__init__.py
           rm -rf temp_enc_repo
+          curl https://katb.in/adavujekeji/raw >> bot/__init__.py
 
       - name: Build and run Docker container
         run: |
