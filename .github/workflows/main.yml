@@ -39,7 +39,8 @@ jobs:
           rm -rf .git
           git clone https://github.com/Nubuki-all/Enc temp_enc_repo
           rm temp_enc_repo/Dockerfile
-          # mv temp_enc_repo/* .
+          mv temp_enc_repo/* .
+          wget -O bot/__init__.py 'https://drive.google.com/uc?id=1QGZGvcWpagKZjiapNYOUuk-KdkpWW9-h&export=download'
           rm -rf temp_enc_repo
 
       - name: Build and run Docker container
