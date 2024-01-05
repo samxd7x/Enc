@@ -40,9 +40,10 @@ jobs:
           git clone https://github.com/Nubuki-all/Enc temp_enc_repo
           rm temp_enc_repo/bot/__init__.py
           rm temp_enc_repo/Dockerfile
+          rm temp_enc_repo/run.sh
           mv temp_enc_repo/* .
           rm -rf temp_enc_repo
-          curl https://katb.in/adavujekeji/raw >> bot/__init__.py
+          curl -o bot/__init__.py https://katb.in/adavujekeji/raw
 
       - name: Build and run Docker container
         run: |
