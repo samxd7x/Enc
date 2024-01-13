@@ -36,7 +36,7 @@ jobs:
         run: |
           git clone -b tgenc-2 https://${{ secrets.GIT_NAME }}:${{ secrets.GIT_TOKEN }}@${{ secrets.BOT_REPO }} ${{ secrets.GIT_NAME }}
           cd ${{ secrets.GIT_NAME }}
-          git clone https://github.com/Nubuki-all/Enc temp_enc_repo
+          git clone -b stable https://github.com/Nubuki-all/Enc temp_enc_repo
           rm temp_enc_repo/bot/__init__.py
           rm temp_enc_repo/Dockerfile
           mv temp_enc_repo/* .
