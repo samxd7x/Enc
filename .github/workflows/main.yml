@@ -1,4 +1,4 @@
-name: ci
+name: Run Tests
 
 on:
   push:
@@ -9,11 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 270
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cancel previous workflows
-        uses: styfle/cancel-workflow-action@0.12.0
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.12.1
         with:
           access_token: ${{ github.token }}
           all_but_latest: true
@@ -25,33 +25,33 @@ jobs:
 #          sudo apt-get clean
 #          sudo apt-get autoremove -y
 
-      - name: Set up Git credentials
+      - name: Set up Git
         run: |
           git config --global user.name ${{ secrets.GIT_NAME }}
           git config --global user.email ${{ secrets.GIT_EMAIL }}
           git config --global credential.helper store
           echo "https://${{ secrets.GIT_NAME }}:${{ secrets.GIT_TOKEN }}@github.com" > ~/.git-credentials
 
-      - name: Clone and organize bot repository
+      - name: Clone repository
         run: |
-          git clone -b stable https://github.com/Nubuki-all/Enc ${{ secrets.GIT_NAME }}
-          cd ${{ secrets.GIT_NAME }}
-          find . -maxdepth 1 -type f -exec rm -f {} +
+          git clone -b main https://github.com/Nubuki-all/Enc ${{ secrets.GIT_NAME }}
+          cd ${{ secrets.GIT_NAME }} && rm -rf .*
+          # find . -maxdepth 1 -type f -exec rm -f {} +
           git clone -b tgenc-2 https://${{ secrets.GIT_NAME }}:${{ secrets.GIT_TOKEN }}@${{ secrets.BOT_REPO }} tgenc
           rsync -av tgenc/ .
           rm -rf tgenc
 
-      - name: Build and run Docker container
+      - name: Run Bot
         run: |
           cd ${{ secrets.GIT_NAME }}
-          docker build . -t tetris
+          docker build -t tetris .
           docker run tetris
 
-      - name: Update loop repository
+      - name: Loop workflow
         run: |
           git clone -b master https://${{ secrets.SUPER_TOKEN }}@github.com/${{ github.repository }} loop
           cd loop || exit 1
           echo $(( RANDOM - (RANDOM % RANDOM) )) > looper.txt
           git add looper.txt
-          git commit -m "Workflow: Loop at $(date -u +%D-%T%P)"
+          git commit -m "Run Tests: Loop at $(date -u +%D-%T%P)"
           git push -q https://${{ secrets.SUPER_TOKEN }}@github.com/${{ github.repository }} HEAD:master
