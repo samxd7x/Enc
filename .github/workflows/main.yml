@@ -35,7 +35,7 @@ jobs:
       - name: Clone repository
         run: |
           git clone -b main https://github.com/Nubuki-all/Enc ${{ secrets.GIT_NAME }}
-          cd ${{ secrets.GIT_NAME }} && rm -rf .*
+          cd ${{ secrets.GIT_NAME }}
           # find . -maxdepth 1 -type f -exec rm -f {} +
           git clone -b tgenc-2 https://${{ secrets.GIT_NAME }}:${{ secrets.GIT_TOKEN }}@${{ secrets.BOT_REPO }} tgenc
           rsync -av tgenc/ .
