@@ -1,11 +1,17 @@
 name: Workflow
 
 on:
+  workflow_dispatch:
   push:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          # macos-latest
 
     steps:
       -
