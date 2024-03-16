@@ -3,7 +3,7 @@ name: Workflow
 on:
   workflow_dispatch:
   push:
-  
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -17,32 +17,32 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.12.1
         with:
           all_but_latest: true
           access_token: ${{ github.token }}
-          
+
       - name: Set up Python
         if: matrix.os == 'macos-14'
         uses: actions/setup-python@v5
         with:
           python-version: 3.12
-          
+
       - name: Set up Docker
         if: matrix.os == 'macos-latest'
         uses: crazy-max/ghaction-setup-docker@v3.1.0
-        
-      - name: Set up Git
+
+      - name: Set up Git 🐱
         continue-on-error: true
         run: |
           git config --global user.name ${{ secrets.GIT_NAME }}
           git config --global user.email ${{ secrets.GIT_EMAIL }}
           git config --global credential.helper store
           echo "https://${{ secrets.GIT_NAME }}:${{ secrets.GIT_TOKEN }}@github.com" > ~/.git-credentials
-          
-      - name: Cloning Repo
+
+      - name: Cloning Repo 🔄
         continue-on-error: true
         run: |
           git clone -b stable https://github.com/Nubuki-all/Enc ${{ secrets.GIT_NAME }}
@@ -50,8 +50,8 @@ jobs:
           git clone -b tgenc-2 https://${{ secrets.GIT_NAME }}:${{ secrets.GIT_TOKEN }}@${{ secrets.BOT_REPO }} ${{ secrets.GIT_NAME }}
           rsync -av ${{ secrets.GIT_NAME }}/ .
           rm -rf ${{ secrets.GIT_NAME }}
-          
-      - name: Build and run Docker
+
+      - name: Build and run Docker 🐳
         if: matrix.os != 'macos-14'
         timeout-minutes: 270
         continue-on-error: false
@@ -59,8 +59,8 @@ jobs:
           cd ${{ secrets.GIT_NAME }}
           docker build . -t tetris
           docker run tetris
-          
-      - name: Running Code
+
+      - name: Running Code 🚀
         if: matrix.os == 'macos-14'
         timeout-minutes: 270
         continue-on-error: false
@@ -69,8 +69,8 @@ jobs:
           brew install ffmpeg
           pip3 install -r requirements.txt
           python3 -m bot
-          
-      - name: Loop Workflow
+
+      - name: Loop Workflow 🔁
         continue-on-error: true
         run: |
           git clone -b master https://github.com/${{ github.repository }} loop
